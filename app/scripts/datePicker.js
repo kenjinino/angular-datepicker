@@ -46,13 +46,8 @@ function getVisibleWeeks(date) {
   date.setSeconds(0);
   date.setMilliseconds(0);
 
-  if (date.getDay() === 0) {
-    date.setDate(-5);
-  } else {
-    date.setDate(date.getDate() - (date.getDay() - 1));
-  }
-  if (date.getDate() === 1) {
-    date.setDate(-6);
+  if (date.getDay() !== 0) {
+    date.setDate(date.getDate() - (date.getDay()));
   }
 
   var weeks = [];
