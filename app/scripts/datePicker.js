@@ -41,7 +41,7 @@ function getVisibleWeeks(date) {
   date = new Date(date || new Date());
   var startMonth = date.getMonth(), startYear = date.getYear();
   date.setDate(1);
-  date.setHours(0);
+  date.setHours(12);
   date.setMinutes(0);
   date.setSeconds(0);
   date.setMilliseconds(0);
