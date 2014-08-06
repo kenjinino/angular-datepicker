@@ -57,8 +57,6 @@ function getVisibleWeeks(date) {
 
   var weeks = [];
   while (weeks.length < 6) {
-    /*jshint -W116 */
-    if(date.getYear()=== startYear && date.getMonth() > startMonth) break;
     var week = [];
     for (var i = 0; i < 7; i++) {
       week.push(new Date(date));
