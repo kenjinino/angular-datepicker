@@ -39,7 +39,6 @@ function getVisibleMinutes(date, step) {
 
 function getVisibleDays(date) {
   date = new Date(date || new Date());
-  var startMonth = date.getMonth(), startYear = date.getYear();
   date.setDate(1);
   date.setHours(12);
   date.setMinutes(0);

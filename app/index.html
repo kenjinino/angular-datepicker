@@ -12,9 +12,18 @@
     <link rel="stylesheet" href="../dist/index.css"/>
   </head>
   <body ng-app="sample">
-    <h4>Date Range</h4>
 
-    <div date-range start="a" end="b" style="position: relative; z-index:0"></div>
+    <h1 style="text-align:center;"> SPECS </h1>
+
+    <div style="float:left; margin-left: 10%;">
+      <h4>Date Picker - Sample</h4>
+      <div date-picker="start" ng-disabled="disableDatePickers" class="date-picker" date after="start" before="end" min-view="date" max-view="date"></div>
+    </div>
+
+    <div style="float:left; margin-left: 10%;">
+      <h4>Date Range - Sample</h4>
+      <div date-range start="a" end="b" style="position: relative; z-index:0"></div>
+    </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
     <!-- build:js module.min.js -->

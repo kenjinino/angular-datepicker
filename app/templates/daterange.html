@@ -1,18 +1,12 @@
-<div>
-    <table>
-        <tr>
-            <button ng-click="setToday()">Today</button>
-            <button ng-click="setYesterday()">Yesterday</button>
-            <button ng-click="setLastWeek()">Last week</button>
-            <button ng-click="setLastMonth()">Last month</button>
-        </tr>
-        <tr>
-            <td valign="top">
-                <div date-picker="start" ng-disabled="disableDatePickers"  class="date-picker" date after="start" before="end" min-view="date" max-view="date"></div>
-            </td>
-            <td valign="top">
-                <div date-picker="end" ng-disabled="disableDatePickers"  class="date-picker" date after="start" before="end"  min-view="date" max-view="date"></div>
-            </td>
-        </tr>
-    </table>
+<div class="date-range-container">
+    <div class="date-range-actions">
+        <button ng-click="setToday()">Today</button>
+        <button ng-click="setYesterday()">Yesterday</button>
+        <button ng-click="setLastWeek()">Last week</button>
+        <button ng-click="setLastMonth()">Last month</button>
+    </div>
+    <div class="date-range">
+        <div date-picker="start" ng-disabled="disableDatePickers"  class="date-picker" date after="start" before="end" min-view="date" max-view="date"></div>
+        <div date-picker="end" ng-disabled="disableDatePickers"  class="date-picker" date after="start" before="end"  min-view="date" max-view="date"></div>
+    </div>
 </div>

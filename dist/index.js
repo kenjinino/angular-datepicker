@@ -39,36 +39,24 @@ function getVisibleMinutes(date, step) {
   return minutes;
 }
 
-function getVisibleWeeks(date) {
+function getVisibleDays(date) {
   date = new Date(date || new Date());
-  var startMonth = date.getMonth(), startYear = date.getYear();
   date.setDate(1);
-  date.setHours(0);
+  date.setHours(12);
   date.setMinutes(0);
   date.setSeconds(0);
   date.setMilliseconds(0);
 
-  if (date.getDay() === 0) {
-    date.setDate(-5);
-  } else {
-    date.setDate(date.getDate() - (date.getDay() - 1));
-  }
-  if (date.getDate() === 1) {
-    date.setDate(-6);
+  if (date.getDay() !== 0) {
+    date.setDate(date.getDate() - (date.getDay()));
   }
 
-  var weeks = [];
-  while (weeks.length < 6) {
-    /*jshint -W116 */
-    if(date.getYear()=== startYear && date.getMonth() > startMonth) break;
-    var week = [];
-    for (var i = 0; i < 7; i++) {
-      week.push(new Date(date));
-      date.setDate(date.getDate() + 1);
-    }
-    weeks.push(week);
+  var days = [];
+  while (days.length < 42) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
   }
-  return weeks;
+  return days;
 }
 
 function getVisibleYears(date) {
@@ -84,7 +72,7 @@ function getVisibleYears(date) {
 function getDaysOfWeek(date) {
   date = new Date(date || new Date());
   date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  date.setDate(date.getDate() - (date.getDay() - 1));
+  date.setDate(date.getDate() - (date.getDay()));
   var days = [];
   for (var i = 0; i < 7; i++) {
     days.push(new Date(date));
@@ -234,7 +222,7 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
           break;
         case 'date':
           scope.weekdays = scope.weekdays || getDaysOfWeek();
-          scope.weeks = getVisibleWeeks(date);
+          scope.days = getVisibleDays(date);
           break;
         case 'hours':
           scope.hours = getVisibleHours(date);
@@ -252,8 +240,15 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
         return scope.model ? scope.model.getMonth() : null;
       }
 
+      function updateDate() {
+        if(scope.model) {
+          scope.date.setMonth(scope.model.getMonth());
+          update();
+        }
+      }
 
       scope.$watch(watch, update);
+      scope.$watch(watch, updateDate);
 
       scope.next = function (delta) {
         var date = scope.date;
@@ -359,6 +354,35 @@ Module.directive('dateRange', function () {
           scope.start = new Date(value);
         }
       });
+
+      scope.setToday = function () {
+        scope.start = new Date();
+        scope.end = new Date();
+      };
+
+      scope.setYesterday = function () {
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        scope.start = yesterday;
+        scope.end = yesterday;
+      };
+
+      scope.setLastWeek = function () {
+        var lastWeek = new Date();
+        lastWeek.setDate(lastWeek.getDate() - 7);
+
+        scope.start = lastWeek;
+        scope.end = new Date();
+      };
+
+      scope.setLastMonth = function () {
+        var lastMonth = new Date();
+        lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+        scope.start = lastMonth;
+        scope.end = new Date();
+      };
     }
   };
 });
@@ -508,249 +532,44 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
 angular.module("datePicker").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("templates/datepicker.html",
-    "<div ng-switch=\"view\">\r" +
-    "\n" +
-    "  <div ng-switch-when=\"date\">\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "      <thead>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-click=\"prev()\">‹</th>\r" +
-    "\n" +
-    "        <th colspan=\"5\" class=\"switch\" ng-click=\"setView('month')\">{{date|date:\"yyyy MMMM\"}}</th>\r" +
-    "\n" +
-    "        <th ng-click=\"next()\">›</i></th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-repeat=\"day in weekdays\" style=\"overflow: hidden\">{{ day|date:\"EEE\" }}</th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </thead>\r" +
-    "\n" +
-    "      <tbody>\r" +
-    "\n" +
-    "      <tr ng-repeat=\"week in weeks\">\r" +
-    "\n" +
-    "        <td ng-repeat=\"day in week\">\r" +
-    "\n" +
-    "          <span\r" +
-    "\n" +
-    "            ng-class=\"{'now':isNow(day),'active':isSameDay(day),'disabled':(day.getMonth()!=date.getMonth()),'after':isAfter(day),'before':isBefore(day)}\"\r" +
-    "\n" +
-    "            ng-click=\"setDate(day)\" ng-bind=\"day.getDate()\"></span>\r" +
-    "\n" +
-    "        </td>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </tbody>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "  </div>\r" +
-    "\n" +
-    "  <div ng-switch-when=\"year\">\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "      <thead>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-click=\"prev(10)\">‹</th>\r" +
-    "\n" +
-    "        <th colspan=\"5\" class=\"switch\">{{years[0].getFullYear()}}-{{years[years.length-1].getFullYear()}}</th>\r" +
-    "\n" +
-    "        <th ng-click=\"next(10)\">›</i></th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </thead>\r" +
-    "\n" +
-    "      <tbody>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <td colspan=\"7\">\r" +
-    "\n" +
-    "          <span ng-class=\"{'active':isSameYear(year),'now':isNow(year)}\"\r" +
-    "\n" +
-    "                ng-repeat=\"year in years\"\r" +
-    "\n" +
-    "                ng-click=\"setDate(year)\" ng-bind=\"year.getFullYear()\"></span>\r" +
-    "\n" +
-    "        </td>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </tbody>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "  </div>\r" +
-    "\n" +
-    "  <div ng-switch-when=\"month\">\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "      <thead>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-click=\"prev()\">‹</th>\r" +
-    "\n" +
-    "        <th colspan=\"5\" class=\"switch\" ng-click=\"setView('year')\">{{ date|date:\"yyyy\" }}</th>\r" +
-    "\n" +
-    "        <th ng-click=\"next()\">›</i></th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </thead>\r" +
-    "\n" +
-    "      <tbody>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <td colspan=\"7\">\r" +
-    "\n" +
-    "          <span ng-repeat=\"month in months\"\r" +
-    "\n" +
-    "                ng-class=\"{'active':isSameMonth(month),'after':isAfter(month),'before':isBefore(month),'now':isNow(month)}\"\r" +
-    "\n" +
-    "                ng-click=\"setDate(month)\"\r" +
-    "\n" +
-    "                ng-bind=\"month|date:'MMM'\"></span>\r" +
-    "\n" +
-    "        </td>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </tbody>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "  </div>\r" +
-    "\n" +
-    "  <div ng-switch-when=\"hours\">\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "      <thead>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-click=\"prev(24)\">‹</th>\r" +
-    "\n" +
-    "        <th colspan=\"5\" class=\"switch\" ng-click=\"setView('date')\">{{ date|date:\"dd MMMM yyyy\" }}</th>\r" +
-    "\n" +
-    "        <th ng-click=\"next(24)\">›</i></th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </thead>\r" +
-    "\n" +
-    "      <tbody>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <td colspan=\"7\">\r" +
-    "\n" +
-    "          <span ng-repeat=\"hour in hours\"\r" +
-    "\n" +
-    "                ng-class=\"{'now':isNow(hour),'active':isSameHour(hour)}\"\r" +
-    "\n" +
-    "                ng-click=\"setDate(hour)\" ng-bind=\"hour|time\"></span>\r" +
-    "\n" +
-    "        </td>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </tbody>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "  </div>\r" +
-    "\n" +
-    "  <div ng-switch-when=\"minutes\">\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "      <thead>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <th ng-click=\"prev()\">‹</th>\r" +
-    "\n" +
-    "        <th colspan=\"5\" class=\"switch\" ng-click=\"setView('hours')\">{{ date|date:\"dd MMMM yyyy\" }}\r" +
-    "\n" +
-    "        </th>\r" +
-    "\n" +
-    "        <th ng-click=\"next()\">›</i></th>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </thead>\r" +
-    "\n" +
-    "      <tbody>\r" +
-    "\n" +
-    "      <tr>\r" +
-    "\n" +
-    "        <td colspan=\"7\">\r" +
-    "\n" +
-    "          <span ng-repeat=\"minute in minutes\"\r" +
-    "\n" +
-    "                ng-class=\"{active:isSameMinutes(minute),'now':isNow(minute)}\"\r" +
-    "\n" +
-    "                ng-click=\"setDate(minute)\"\r" +
-    "\n" +
-    "                ng-bind=\"minute|time\"></span>\r" +
-    "\n" +
-    "        </td>\r" +
-    "\n" +
-    "      </tr>\r" +
-    "\n" +
-    "      </tbody>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "  </div>\r" +
-    "\n" +
-    "</div>\r" +
-    "\n"
+    "<div class=\"datepicker\">\n" +
+    "  <div class=\"datepicker-actions\">\n" +
+    "    <span class=\"datepicker-actions-arrow is-previous\" ng-click=\"prev()\">‹</span>\n" +
+    "    <span class=\"datepicker-actions-switch\">{{date|date:\"yyyy MMMM\"}}</span>\n" +
+    "    <span class=\"datepicker-actions-arrow is-next\" ng-click=\"next()\">›</span>\n" +
+    "  </div>\n" +
+    "  <div class=\"datepicker-calendar\">\n" +
+    "    <span\n" +
+    "      class=\"datepicker-calendar-weekday\"\n" +
+    "      ng-repeat=\"day in weekdays\"\n" +
+    "      style=\"overflow: hidden\">\n" +
+    "      {{ day|date:\"EEE\"|limitTo:1 }}\n" +
+    "    </span>\n" +
+    "    <span\n" +
+    "      class=\"datepicker-calendar-day\"\n" +
+    "      ng-repeat=\"day in days\"\n" +
+    "      ng-class=\"{'is-now':isNow(day),'is-active':isSameDay(day),'is-disabled':(day.getMonth()!=date.getMonth()),'is-after':isAfter(day),'is-before':isBefore(day)}\"\n" +
+    "      ng-click=\"setDate(day)\"\n" +
+    "      ng-bind=\"day.getDate()\">\n" +
+    "    </span>\n" +
+    "    <div class=\"clearfix\"></div>\n" +
+    "  </div>\n" +
+    "</div>\n"
   );
 
   $templateCache.put("templates/daterange.html",
-    "<div>\r" +
-    "\n" +
-    "    <table>\r" +
-    "\n" +
-    "        <tr>\r" +
-    "\n" +
-    "            <td valign=\"top\">\r" +
-    "\n" +
-    "                <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\r" +
-    "\n" +
-    "            </td>\r" +
-    "\n" +
-    "            <td valign=\"top\">\r" +
-    "\n" +
-    "                <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\r" +
-    "\n" +
-    "            </td>\r" +
-    "\n" +
-    "        </tr>\r" +
-    "\n" +
-    "    </table>\r" +
-    "\n" +
-    "</div>\r" +
-    "\n"
+    "<div class=\"date-range-container\">\n" +
+    "    <div class=\"date-range-actions\">\n" +
+    "        <button ng-click=\"setToday()\">Today</button>\n" +
+    "        <button ng-click=\"setYesterday()\">Yesterday</button>\n" +
+    "        <button ng-click=\"setLastWeek()\">Last week</button>\n" +
+    "        <button ng-click=\"setLastMonth()\">Last month</button>\n" +
+    "    </div>\n" +
+    "    <div class=\"date-range\">\n" +
+    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\n" +
+    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
   );
 
 }]);

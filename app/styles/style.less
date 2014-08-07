@@ -1,8 +1,7 @@
-@import "variables.less";
-@import "mixins.less";
+/* DateRange & DatePicker */
 
-// Reset everything
-*, *:before, *:after {
+[date-range], [date-range] *,
+[date-picker], [date-picker] * {
   box-sizing: border-box;
   line-height: 140%;
   margin: 0;
@@ -10,12 +9,37 @@
   user-select: none;
 }
 
+/* DateRange */
+
+[date-range] {
+
+  .date-range-container {
+    width: 380px;
+  }
+
+  .date-range-actions {
+    height: 30px;
+    text-align: center;
+  }
+
+  .date-range {
+    background-color: yellow;
+
+    .date-picker {
+      float: left;
+      margin: 10px;
+    }
+  }
+}
+
+/* DatePicker */
+
 [date-picker] {
 
-  .user-select(none);
+  user-select: none;
 
   .datepicker-item-block(@size) {
-		.border-radius(2px);
+		border-radius: 2px;
     cursor: pointer;
     display: block;
     float: left;
@@ -49,7 +73,7 @@
   }
 
   .datepicker-actions-arrow {
-    .border-radius(2px);
+    border-radius: 2px;
     border: 1px solid #FFFFFF;
     cursor: pointer;
     float: left;
@@ -74,7 +98,7 @@
 
   .datepicker-calendar {
     border: 1px solid #EBEBEB;
-    .border-radius(2px);
+    border-radius: 2px;
     font-size: 11px;
     height: 170px;
   }
@@ -105,7 +129,7 @@
 
     &.is-disabled {
       background: none;
-      color: #999999 !important;
+      color: #999999;
       cursor: default;
     }
   }
