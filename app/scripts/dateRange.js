@@ -23,6 +23,35 @@ Module.directive('dateRange', function () {
           scope.start = new Date(value);
         }
       });
+
+      scope.setToday = function () {
+        scope.start = new Date();
+        scope.end = new Date();
+      };
+
+      scope.setYesterday = function () {
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        scope.start = yesterday;
+        scope.end = yesterday;
+      };
+
+      scope.setLastWeek = function () {
+        var lastWeek = new Date();
+        lastWeek.setDate(lastWeek.getDate() - 7);
+
+        scope.start = lastWeek;
+        scope.end = new Date();
+      };
+
+      scope.setLastMonth = function () {
+        var lastMonth = new Date();
+        lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+        scope.start = lastMonth;
+        scope.end = new Date();
+      };
     }
   };
 });
