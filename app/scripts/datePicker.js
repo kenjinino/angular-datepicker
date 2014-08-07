@@ -239,8 +239,15 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
         return scope.model ? scope.model.getMonth() : null;
       }
 
+      function updateDate() {
+        if(scope.model) {
+          scope.date.setMonth(scope.model.getMonth());
+          update();
+        }
+      }
 
       scope.$watch(watch, update);
+      scope.$watch(watch, updateDate);
 
       scope.next = function (delta) {
         var date = scope.date;
