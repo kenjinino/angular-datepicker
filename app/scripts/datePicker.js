@@ -37,7 +37,7 @@ function getVisibleMinutes(date, step) {
   return minutes;
 }
 
-function getVisibleWeeks(date) {
+function getVisibleDays(date) {
   date = new Date(date || new Date());
   var startMonth = date.getMonth(), startYear = date.getYear();
   date.setDate(1);
@@ -50,16 +50,12 @@ function getVisibleWeeks(date) {
     date.setDate(date.getDate() - (date.getDay()));
   }
 
-  var weeks = [];
-  while (weeks.length < 6) {
-    var week = [];
-    for (var i = 0; i < 7; i++) {
-      week.push(new Date(date));
-      date.setDate(date.getDate() + 1);
-    }
-    weeks.push(week);
+  var days = [];
+  while (days.length < 42) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
   }
-  return weeks;
+  return days;
 }
 
 function getVisibleYears(date) {
@@ -225,7 +221,7 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
           break;
         case 'date':
           scope.weekdays = scope.weekdays || getDaysOfWeek();
-          scope.weeks = getVisibleWeeks(date);
+          scope.days = getVisibleDays(date);
           break;
         case 'hours':
           scope.hours = getVisibleHours(date);

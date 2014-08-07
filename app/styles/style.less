@@ -1,106 +1,112 @@
 @import "variables.less";
 @import "mixins.less";
 
-[date-picker-wrapper]{
-  position: relative !important;
-  display:block;
-}
-
-[date-time-append] [date-picker]{
-  position: relative;
-  margin-right: -1000px;
-  margin-bottom: -1000px;
-}
-
-[date-range] [date-picker] {
-  .after.before{
-    .buttonBackground(@btnInfoBackground, spin(@btnInfoBackgroundHighlight, 20));
-  }
+// Reset everything
+*, *:before, *:after {
+  box-sizing: border-box;
+  line-height: 140%;
+  margin: 0;
+  outline: 0;
+  user-select: none;
 }
 
 [date-picker] {
+
   .user-select(none);
-  .border-radius(4px);
 
-  /* GENERAL */
+  .datepicker-item-block(@size) {
+		.border-radius(2px);
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: @size;
+    line-height: @size;
+    margin: 2px;
+    text-align: center;
+    width: @size;
 
-  padding: 4px;
+		&:hover {
+			background: #8CC8FF;
+		}
 
-  table {
-    margin: 0;
+		&.disabled, &.disabled:hover {
+      color: #EBEBEB;
+    }
+
+    &.disabled:hover {
+      background: #D7D7D7;
+    }
   }
 
-  td, th {
-    padding: 4px 5px;
+  .datepicker {
+    color: #5F5F5F;
+    width: 170px;
+  }
+
+  .datepicker-actions {
+    font-size: 13px;
+    height: 30px;
+  }
+
+  .datepicker-actions-arrow {
+    .border-radius(2px);
+    border: 1px solid #FFFFFF;
+    cursor: pointer;
+    float: left;
+    line-height: 140%;
+    height: 20px;
+    margin: 5px;
     text-align: center;
     width: 20px;
-    height: 20px;
-    .border-radius(4px);
-    border: none;
 
+    &:hover {
+      border: 1px solid #8CC8FF;
+    }
   }
 
-  .switch{
-    width: 145px;
+  .datepicker-actions-switch {
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    width: 110px;
   }
 
-  span {
-      display: block;
-			width: 23%;
-			height: 26px;
-			line-height: 25px;
-			float: left;
-			margin: 1%;
-			cursor: pointer;
-			.border-radius(4px);
-			&:hover {
-				background: @grayLighter;
-			}
-			&.disabled, &.disabled:hover {
-				background:none;
-				color: @grayLight;
-				cursor: default;
-			}
-
+  .datepicker-calendar {
+    border: 1px solid #EBEBEB;
+    .border-radius(2px);
+    font-size: 11px;
+    height: 170px;
   }
 
-  .active , .now{
-    .buttonBackground(@btnPrimaryBackground, spin(@btnPrimaryBackground, 20));
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
-  }
-
-  .now {
-    .buttonBackground(@btnDangerBackground, spin(@btnDangerBackground, 20));
-  }
-
-  .disabled {
-    background: none;
-    color: #999999 !important;
+  .datepicker-calendar-weekday {
+    .datepicker-item-block(20px);
     cursor: default;
-  }
+    font-weight: bold;
 
-  /* SPECIFIC */
-
-  [ng-switch-when="year"], [ng-switch-when="month"], [ng-switch-when="minutes"]{
-    span {
-      height: 54px;
-      line-height: 54px;
-    }
-  }
-  [ng-switch-when="date"]{
-    td {
-      padding: 0;
-    }
-    span{
-      width: 100%;
-      height: 26px;
-      line-height: 26px;
+    &:hover {
+      background-color: #FFFFFF;
     }
   }
 
-  th:hover, [ng-switch-when="date"] td span:hover{
-    background: @grayLighter;
-	  cursor: pointer;
+  .datepicker-calendar-day {
+    .datepicker-item-block(20px);
+    cursor: pointer;
+
+    &.is-active {
+      background-color: #007DFF;
+      color: #FFFFFF;
+    }
+
+    &.is-now {
+      background-color: #B9D200;
+      color: #FFFFFF;
+    }
+
+    &.is-disabled {
+      background: none;
+      color: #999999 !important;
+      cursor: default;
+    }
   }
 }
