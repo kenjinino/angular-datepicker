@@ -1,9 +1,16 @@
 <div class="datepicker">
+
+  <div class="datepicker-input">
+    <input class="datepicker-input-date" type="text" ng-model="date"></input>
+    <input class="datepicker-input-time" type="text" ng-model="time"></input>
+  </div>
+
   <div class="datepicker-actions">
     <span class="datepicker-actions-arrow is-previous" ng-click="prev()">‹</span>
     <span class="datepicker-actions-switch">{{date|date:"yyyy MMMM"}}</span>
     <span class="datepicker-actions-arrow is-next" ng-click="next()">›</span>
   </div>
+
   <div class="datepicker-calendar">
     <span
       class="datepicker-calendar-weekday"
