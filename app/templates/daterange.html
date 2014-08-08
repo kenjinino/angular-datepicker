@@ -1,9 +1,9 @@
 <div class="date-range-container">
     <div class="date-range-actions">
-        <button ng-click="setToday()">Today</button>
-        <button ng-click="setYesterday()">Yesterday</button>
-        <button ng-click="setLastWeek()">Last week</button>
-        <button ng-click="setLastMonth()">Last month</button>
+        <button class="date-range-action" ng-click="setToday()">{{today}}</button>
+        <button class="date-range-action" ng-click="setYesterday()">{{yesterday}}</button>
+        <button class="date-range-action" ng-click="setLastWeek()">{{lastWeek}}</button>
+        <button class="date-range-action" ng-click="setLastMonth()">{{lastMonth}}</button>
     </div>
     <div class="date-range">
         <div date-picker="start" ng-disabled="disableDatePickers"  class="date-picker" date after="start" before="end" min-view="date" max-view="date"></div>

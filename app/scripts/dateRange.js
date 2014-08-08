@@ -6,6 +6,11 @@ Module.directive('dateRange', function () {
   return {
     templateUrl: 'templates/daterange.html',
     scope: {
+      to: '=',
+      today: '=',
+      yesterday: '=',
+      lastWeek: '=',
+      lastMonth: '=',
       start: '=',
       end: '='
     },

@@ -337,6 +337,10 @@ Module.directive('dateRange', function () {
   return {
     templateUrl: 'templates/daterange.html',
     scope: {
+      today: '=',
+      yesterday: '=',
+      lastWeek: '=',
+      lastMonth: '=',
       start: '=',
       end: '='
     },
@@ -560,10 +564,10 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/daterange.html",
     "<div class=\"date-range-container\">\n" +
     "    <div class=\"date-range-actions\">\n" +
-    "        <button ng-click=\"setToday()\">Today</button>\n" +
-    "        <button ng-click=\"setYesterday()\">Yesterday</button>\n" +
-    "        <button ng-click=\"setLastWeek()\">Last week</button>\n" +
-    "        <button ng-click=\"setLastMonth()\">Last month</button>\n" +
+    "        <button class=\"date-range-action\" ng-click=\"setToday()\">{{today}}</button>\n" +
+    "        <button class=\"date-range-action\" ng-click=\"setYesterday()\">{{yesterday}}</button>\n" +
+    "        <button class=\"date-range-action\" ng-click=\"setLastWeek()\">{{lastWeek}}</button>\n" +
+    "        <button class=\"date-range-action\" ng-click=\"setLastMonth()\">{{lastMonth}}</button>\n" +
     "    </div>\n" +
     "    <div class=\"date-range\">\n" +
     "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\n" +
