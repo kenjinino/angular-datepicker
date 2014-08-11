@@ -134,7 +134,7 @@ function isSameMinutes(model, date) {
 
 
 
-Module.directive('datePicker', ['datePickerConfig', function datePickerDirective(datePickerConfig) {
+Module.directive('datePicker', ['datePickerConfig', '$filter', function datePickerDirective(datePickerConfig, $filter) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -231,11 +231,20 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
         }
       }
 
+      function updateInput() {
+        scope.dateinput = $filter('date')(scope.model, 'shortDate');
+        scope.timeinput = $filter('date')(scope.model, 'shortTime');
+      }
+
       function watch() {
         if (scope.view !== 'date') {
           return scope.view;
         }
         return scope.model ? scope.model.getMonth() : null;
+      }
+
+      function watchSelectedDate() {
+        return scope.model ? scope.model.getTime() : null;
       }
 
       function updateDate() {
@@ -247,6 +256,7 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
 
       scope.$watch(watch, update);
       scope.$watch(watch, updateDate);
+      scope.$watch(watchSelectedDate, updateInput);
 
       scope.next = function (delta) {
         var date = scope.date;
