@@ -353,18 +353,14 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.formatDate = function (dateParts, locale) {
         var year, month, day;
         if (locale === 'en-us') {
-          console.log("---", locale);
           month = parseInt(dateParts[0]);
           day = parseInt(dateParts[1]);
           year = parseInt(dateParts[2]);
         }
         else {
-          console.log("+++", locale);
           day = parseInt(dateParts[0]);
           month = parseInt(dateParts[1]);
           year = parseInt(dateParts[2]);
-
-          console.log("dia", day, "mes", month, "ano", year);
         }
         return new Date(year, month - 1, day);
       }
