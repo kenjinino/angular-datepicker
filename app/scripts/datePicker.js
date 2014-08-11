@@ -373,6 +373,10 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         }
       };
 
+      scope.toggleTimeInputFocused = function () {
+        scope.isFocused = !scope.isFocused;
+      };
+
     }
   };
 }]);
