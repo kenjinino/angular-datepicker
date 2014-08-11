@@ -133,8 +133,7 @@ function isSameMinutes(model, date) {
 }
 
 
-
-Module.directive('datePicker', ['datePickerConfig', '$filter', function datePickerDirective(datePickerConfig, $filter) {
+Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -155,6 +154,11 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', function datePick
 
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
+
+      scope.inputDateTime = {
+        date: scope.date,
+        time: scope.time
+      };
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
@@ -231,32 +235,22 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', function datePick
         }
       }
 
-      function updateInput() {
-        scope.dateinput = $filter('date')(scope.model, 'shortDate');
-        scope.timeinput = $filter('date')(scope.model, 'shortTime');
-      }
-
       function watch() {
         if (scope.view !== 'date') {
           return scope.view;
         }
-        return scope.model ? scope.model.getMonth() : null;
-      }
-
-      function watchSelectedDate() {
         return scope.model ? scope.model.getTime() : null;
       }
 
       function updateDate() {
         if(scope.model) {
-          scope.date.setMonth(scope.model.getMonth());
+          scope.date.setTime(scope.model.getTime());
           update();
         }
       }
 
       scope.$watch(watch, update);
       scope.$watch(watch, updateDate);
-      scope.$watch(watchSelectedDate, updateInput);
 
       scope.next = function (delta) {
         var date = scope.date;
@@ -333,6 +327,47 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', function datePick
         }
         return is;
       };
+
+      /* Watchers - Input and Calendar Sync */
+
+      scope.inputDateFormat = $locale.id ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+
+      /* Changes on Input */
+      scope.$watch('inputDateTime.date', function (newValue, oldValue) {
+        if (!newValue || newValue.length < 10) return;
+        newValue = newValue.toString();
+        var dateParts = newValue.split('/');
+        if (dateParts.length != 3) return;
+        var date = scope.formatDate(dateParts, $locale.id);
+        if (scope.isValidDate(date)) {
+          scope.setDate(date);
+        }
+      });
+
+      /* Changes on Calendar */
+      scope.$watch('date', function (newValue, oldValue) {
+        scope.inputDateTime.date = $filter('date')(newValue, scope.inputDateFormat);
+      });
+
+      /* Date Format based on Locale */
+      scope.formatDate = function (dateParts, locale) {
+        var year, month, day;
+        if (locale === 'en-us') {
+          month = parseInt(dateParts[0]);
+          day = parseInt(dateParts[1]);
+          year = parseInt(dateParts[2]);
+        }
+        else {
+          day = parseInt(dateParts[0]);
+          month = parseInt(dateParts[1]);
+          year = parseInt(dateParts[2]);
+        }
+        return new Date(year, month - 1, day);
+      }
+
+      scope.isValidDate = function (date) {
+        return date.toJSON() !== null;
+      }
     }
   };
 }]);
