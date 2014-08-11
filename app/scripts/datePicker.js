@@ -156,8 +156,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       var partial = !!attrs.partial;
 
       scope.inputDateTime = {
-        date: scope.date,
-        time: scope.time
+        date: scope.model,
+        time: null
       };
 
       /** @namespace attrs.minView, attrs.maxView */
@@ -242,9 +242,11 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         return scope.model ? scope.model.getTime() : null;
       }
 
+      /* Changes on Calendar */
       function updateDate() {
         if(scope.model) {
           scope.date.setTime(scope.model.getTime());
+          scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
           update();
         }
       }
@@ -342,11 +344,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         if (scope.isValidDate(date)) {
           scope.setDate(date);
         }
-      });
-
-      /* Changes on Calendar */
-      scope.$watch('date', function (newValue, oldValue) {
-        scope.inputDateTime.date = $filter('date')(newValue, scope.inputDateFormat);
       });
 
       /* Date Format based on Locale */
