@@ -1,6 +1,6 @@
 'use strict';
 
-var Module = angular.module('datePicker', []);
+var Module = angular.module('datePicker', ['ui.mask']);
 
 Module.constant('datePickerConfig', {
   template: 'templates/datepicker.html',
@@ -330,15 +330,13 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       /* Watchers - Input and Calendar Sync */
 
-      scope.inputDateFormat = $locale.id ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+      scope.inputDateFormat = $locale.id ? 'MMddyyyy' : 'ddMMyyyy';
 
       /* Changes on Input */
       scope.$watch('inputDateTime.date', function (newValue, oldValue) {
-        if (!newValue || newValue.length < 10) return;
+        if (!newValue || newValue.length < 8) return;
         newValue = newValue.toString();
-        var dateParts = newValue.split('/');
-        if (dateParts.length != 3) return;
-        var date = scope.formatDate(dateParts, $locale.id);
+        var date = scope.formatDate(newValue, $locale.id);
         if (scope.isValidDate(date)) {
           scope.setDate(date);
         }
@@ -350,17 +348,17 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       });
 
       /* Date Format based on Locale */
-      scope.formatDate = function (dateParts, locale) {
+      scope.formatDate = function (date, locale) {
         var year, month, day;
         if (locale === 'en-us') {
-          month = parseInt(dateParts[0]);
-          day = parseInt(dateParts[1]);
-          year = parseInt(dateParts[2]);
+          month = parseInt(date.slice(0, 2));
+          day = parseInt(date.slice(2, 4));
+          year = parseInt(date.slice(4, 8));
         }
         else {
-          day = parseInt(dateParts[0]);
-          month = parseInt(dateParts[1]);
-          year = parseInt(dateParts[2]);
+          day = parseInt(date.slice(0, 2));
+          month = parseInt(date.slice(2, 4));
+          year = parseInt(date.slice(4, 8));
         }
         return new Date(year, month - 1, day);
       }
@@ -368,6 +366,16 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.isValidDate = function (date) {
         return date.toJSON() !== null;
       }
+
+      /* Time Input */
+
+      scope.toggleTimeInput = function () {
+        scope.isTimeActive = !scope.isTimeActive;
+        if (!scope.isTimeActive) {
+          scope.inputDateTime.time = '';
+        }
+      }
+
     }
   };
 }]);
