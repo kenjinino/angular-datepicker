@@ -330,7 +330,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       /* Watchers - Input and Calendar Sync */
 
-      scope.inputDateFormat = $locale.id ? 'MMddyyyy' : 'ddMMyyyy';
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
 
       /* Changes on Input */
       scope.$watch('inputDateTime.date', function (newValue, oldValue) {
