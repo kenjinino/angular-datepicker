@@ -335,8 +335,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
 
       /* Changes on Input */
-      scope.$watch('inputDateTime.date', function (newValue, oldValue) {
-        if (!newValue || newValue.length < 8) return;
+      scope.$watch('inputDateTime.date', function (newValue) {
+        if (!newValue || newValue.length < 8) { return; }
         newValue = newValue.toString();
         var date = scope.formatDate(newValue, $locale.id);
         if (scope.isValidDate(date)) {
@@ -348,21 +348,21 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.formatDate = function (date, locale) {
         var year, month, day;
         if (locale === 'en-us') {
-          month = parseInt(date.slice(0, 2));
-          day = parseInt(date.slice(2, 4));
-          year = parseInt(date.slice(4, 8));
+          month = parseInt(date.slice(0, 2), 10);
+          day = parseInt(date.slice(2, 4), 10);
+          year = parseInt(date.slice(4, 8), 10);
         }
         else {
-          day = parseInt(date.slice(0, 2));
-          month = parseInt(date.slice(2, 4));
-          year = parseInt(date.slice(4, 8));
+          day = parseInt(date.slice(0, 2), 10);
+          month = parseInt(date.slice(2, 4), 10);
+          year = parseInt(date.slice(4, 8), 10);
         }
         return new Date(year, month - 1, day);
-      }
+      };
 
       scope.isValidDate = function (date) {
         return date.toJSON() !== null;
-      }
+      };
 
       /* Time Input */
 
@@ -371,7 +371,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         if (!scope.isTimeActive) {
           scope.inputDateTime.time = '';
         }
-      }
+      };
 
     }
   };
