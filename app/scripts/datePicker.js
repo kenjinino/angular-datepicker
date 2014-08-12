@@ -147,6 +147,9 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
     },
     link: function (scope, element, attrs) {
 
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
+      scope.inputTimeFormat = 'HHmm';
+
       scope.date = new Date(scope.model || new Date());
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
@@ -337,9 +340,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       };
 
       /* Watchers - Input and Calendar Sync */
-
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
-      scope.inputTimeFormat = 'HH:mm';
 
       /* Changes on Date Input */
       scope.$watch('inputDateTime.date', function (newValue) {
