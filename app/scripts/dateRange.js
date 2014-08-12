@@ -22,7 +22,8 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         {
           selectedPeriodString: null,
           startStatus: { hasDate: false, hasTime: false },
-          endStatus: { hasDate: false, hasTime: false }
+          endStatus: { hasDate: false, hasTime: false },
+          hasPresetedDate: false
         };
 
       scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
@@ -167,21 +168,25 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
 
           if((startDate === endDate) && (startDate === todayDate)) {
             scope.status.selectedPeriodString = scope.today;
+            scope.status.hasPresetedDate = true;
             return;
           }
 
           if((startDate === endDate) && (startDate === yesterdayDate)) {
             scope.status.selectedPeriodString = scope.yesterday;
+            scope.status.hasPresetedDate = true;
             return;
           }
 
           if((startDate === lastWeekDate) && (endDate === todayDate)) {
             scope.status.selectedPeriodString = scope.lastWeek;
+            scope.status.hasPresetedDate = true;
             return;
           }
 
           if((startDate === lastMonthDate) && (endDate === todayDate)) {
             scope.status.selectedPeriodString = scope.lastMonth;
+            scope.status.hasPresetedDate = true;
             return;
           }
         }
@@ -193,6 +198,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         if(status.endStatus.hasTime) { endString += ' ' + scope.at + ' ' + endTime; }
 
         status.selectedPeriodString = startString + ' ' + scope.to + ' ' + endString;
+        scope.status.hasPresetedDate = false;
         return;
       };
     }
