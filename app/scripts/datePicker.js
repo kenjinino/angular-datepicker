@@ -157,11 +157,9 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       var partial = !!attrs.partial;
 
       scope.inputDateTime = {
-        date: scope.model,
-        time: null
+        date: $filter('date')(scope.model, scope.inputDateFormat),
+        time: $filter('date')(scope.model, scope.inputTimeFormat)
       };
-
-      scope.status = scope.status || { hasDate: false, hasTime: false };
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
@@ -256,6 +254,11 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       scope.$watch(watch, update);
       scope.$watch(watch, updateDate);
+      scope.$watch('status', function() {
+        scope.status = scope.status || { hasDate: false, hasTime: false };
+
+        if(scope.status.hasTime) { scope.isTimeActive = true; }
+      });
 
       scope.next = function (delta) {
         var date = scope.date;
@@ -336,6 +339,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       /* Watchers - Input and Calendar Sync */
 
       scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
+      scope.inputTimeFormat = 'HH:mm';
 
       /* Changes on Date Input */
       scope.$watch('inputDateTime.date', function (newValue) {
