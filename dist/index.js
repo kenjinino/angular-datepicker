@@ -2,7 +2,7 @@
 (function(angular){
 'use strict';
 
-var Module = angular.module('datePicker', []);
+var Module = angular.module('datePicker', ['ui.mask']);
 
 Module.constant('datePickerConfig', {
   template: 'templates/datepicker.html',
@@ -135,8 +135,7 @@ function isSameMinutes(model, date) {
 }
 
 
-
-Module.directive('datePicker', ['datePickerConfig', function datePickerDirective(datePickerConfig) {
+Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -157,6 +156,11 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
 
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
+
+      scope.inputDateTime = {
+        date: scope.model,
+        time: null
+      };
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
@@ -237,12 +241,14 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
         if (scope.view !== 'date') {
           return scope.view;
         }
-        return scope.model ? scope.model.getMonth() : null;
+        return scope.model ? scope.model.getTime() : null;
       }
 
+      /* Changes on Calendar */
       function updateDate() {
         if(scope.model) {
-          scope.date.setMonth(scope.model.getMonth());
+          scope.date.setTime(scope.model.getTime());
+          scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
           update();
         }
       }
@@ -325,6 +331,58 @@ Module.directive('datePicker', ['datePickerConfig', function datePickerDirective
         }
         return is;
       };
+
+      /* Watchers - Input and Calendar Sync */
+
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+
+      /* Changes on Input */
+      scope.$watch('inputDateTime.date', function (newValue) {
+        if (!newValue || newValue.length < 8) { return; }
+        newValue = newValue.toString();
+        var date = scope.formatDate(newValue, $locale.id);
+        if (scope.isValidDate(date)) {
+          scope.setDate(date);
+        }
+      });
+
+      /* Date Format based on Locale */
+      scope.formatDate = function (date, locale) {
+        var year, month, day;
+        if (locale === 'en-us') {
+          month = parseInt(date.slice(0, 2), 10);
+          day = parseInt(date.slice(2, 4), 10);
+          year = parseInt(date.slice(4, 8), 10);
+        }
+        else {
+          day = parseInt(date.slice(0, 2), 10);
+          month = parseInt(date.slice(2, 4), 10);
+          year = parseInt(date.slice(4, 8), 10);
+        }
+        return new Date(year, month - 1, day);
+      };
+
+      scope.isValidDate = function (date) {
+        return date.toJSON() !== null;
+      };
+
+      /* Time Input */
+
+      scope.toggleTimeInput = function () {
+        scope.isTimeActive = !scope.isTimeActive;
+        if (!scope.isTimeActive) {
+          scope.inputDateTime.time = '';
+        }
+      };
+
+      scope.toggleTimeInputFocused = function () {
+        scope.isTimeInputFocused = !scope.isTimeInputFocused;
+      };
+
+      scope.toggleDateInputFocused = function () {
+        scope.isDateInputFocused = !scope.isDateInputFocused;
+      };
+
     }
   };
 }]);
@@ -337,6 +395,7 @@ Module.directive('dateRange', function () {
   return {
     templateUrl: 'templates/daterange.html',
     scope: {
+      to: '=',
       today: '=',
       yesterday: '=',
       lastWeek: '=',
@@ -537,11 +596,47 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("templates/datepicker.html",
     "<div class=\"datepicker\">\n" +
-    "  <div class=\"datepicker-actions\">\n" +
-    "    <span class=\"datepicker-actions-arrow is-previous\" ng-click=\"prev()\">‹</span>\n" +
-    "    <span class=\"datepicker-actions-switch\">{{date|date:\"yyyy MMMM\"}}</span>\n" +
-    "    <span class=\"datepicker-actions-arrow is-next\" ng-click=\"next()\">›</span>\n" +
+    "\n" +
+    "  <div class=\"datepicker-input\" ng-class=\"{ 'is-focused': isDateInputFocused }\">\n" +
+    "    <input class=\"datepicker-input-date\" type=\"text\" maxlength=\"10\" ng-model=\"inputDateTime.date\" ui-mask=\"99/99/9999\" ng-focus=\"toggleDateInputFocused()\"\n" +
+    "      ng-blur=\"toggleDateInputFocused()\"></input>\n" +
+    "    <svg class=\"datepicker-input-icon\" ng-click=\"toggleTimeInput()\" ng-class=\"{ 'is-active': isTimeActive, 'is-focused': isTimeInputFocused }\"\n" +
+    "      version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
+    "      viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\">\n" +
+    "    <g id=\"time\">\n" +
+    "      <path d=\"M12.5,10H10V6.5C10,6.22,9.78,6,9.5,6C9.22,6,9,6.22,9,6.5V11h3.5c0.28,0,0.5-0.22,0.5-0.5C13,10.22,12.78,10,12.5,10z\"/>\n" +
+    "      <path d=\"M10,3c-3.87,0-7,3.13-7,7s3.13,7,7,7s7-3.13,7-7S13.87,3,10,3z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6\n" +
+    "        S13.31,16,10,16z\"/>\n" +
+    "    </g>\n" +
+    "    </svg>\n" +
+    "    <input\n" +
+    "      class=\"datepicker-input-time\"\n" +
+    "      type=\"text\"\n" +
+    "      maxlength=\"5\"\n" +
+    "      ng-model=\"inputDateTime.time\"\n" +
+    "      ui-mask=\"99:99\"\n" +
+    "      ng-if=\"isTimeActive\"\n" +
+    "      ng-focus=\"toggleTimeInputFocused()\"\n" +
+    "      ng-blur=\"toggleTimeInputFocused()\">\n" +
+    "    </input>\n" +
     "  </div>\n" +
+    "\n" +
+    "  <div class=\"datepicker-actions\">\n" +
+    "    <span class=\"datepicker-actions-arrow\" ng-click=\"prev()\">\n" +
+    "      <svg class=\"datepicker-actions-arrow-icon is-previous\" version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
+    "         viewBox=\"0 0 9 16\" enable-background=\"new 0 0 9 16\" xml:space=\"preserve\">\n" +
+    "      <polygon id=\"arrow\" points=\"9,8 1.03448,0 0,1.06667 6.93103,8 0,14.93333 1.03448,16 \"/>\n" +
+    "      </svg>\n" +
+    "    </span>\n" +
+    "    <span class=\"datepicker-actions-switch\">{{date|date:\"yyyy MMMM\"}}</span>\n" +
+    "    <span class=\"datepicker-actions-arrow\" ng-click=\"next()\">\n" +
+    "      <svg class=\"datepicker-actions-arrow-icon is-next\" version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
+    "         viewBox=\"0 0 9 16\" enable-background=\"new 0 0 9 16\" xml:space=\"preserve\">\n" +
+    "      <polygon id=\"arrow\" points=\"9,8 1.03448,0 0,1.06667 6.93103,8 0,14.93333 1.03448,16 \"/>\n" +
+    "      </svg>\n" +
+    "    </span>\n" +
+    "  </div>\n" +
+    "\n" +
     "  <div class=\"datepicker-calendar\">\n" +
     "    <span\n" +
     "      class=\"datepicker-calendar-weekday\"\n" +
@@ -571,6 +666,7 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
     "    </div>\n" +
     "    <div class=\"date-range\">\n" +
     "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\n" +
+    "        <div class=\"date-range-separator\">{{to}}</div>\n" +
     "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\n" +
     "    </div>\n" +
     "</div>\n"

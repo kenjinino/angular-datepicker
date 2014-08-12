@@ -22,10 +22,6 @@
   text-align: center;
 }
 
-[date-range] .date-range {
-  background-color: yellow;
-}
-
 [date-range] .date-range .date-picker {
   float: left;
   margin: 10px;
@@ -40,6 +36,50 @@
 [date-picker] .datepicker {
   width: 170px;
   color: #5F5F5F;
+}
+
+[date-picker] .datepicker-input {
+  position: relative;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #EBEBEB;
+}
+
+[date-picker] .datepicker-input.is-focused {
+  border: 1px solid #8CC8FF;
+}
+
+[date-picker] .datepicker-input-date,
+[date-picker] .datepicker-input-time {
+  height: 20px;
+  font-size: 11px;
+  border: 0;
+}
+
+[date-picker] .datepicker-input-date {
+  float: left;
+  width: 60%;
+}
+
+[date-picker] .datepicker-input-time {
+  float: right;
+  width: 20%;
+}
+
+[date-picker] .datepicker-input-icon {
+  position: absolute;
+  right: 7px;
+  width: 20px;
+  height: 20px;
+  fill: #C3C3C3;
+}
+
+[date-picker] .datepicker-input-icon.is-focused {
+  fill: #8CC8FF;
+}
+
+[date-picker] .datepicker-input-icon.is-active {
+  right: 40px;
 }
 
 [date-picker] .datepicker-actions {
@@ -61,6 +101,16 @@
 
 [date-picker] .datepicker-actions-arrow:hover {
   border: 1px solid #8CC8FF;
+}
+
+[date-picker] .datepicker-actions-arrow-icon {
+  width: 8px;
+  height: 8px;
+  fill: #C3C3C3;
+}
+
+[date-picker] .datepicker-actions-arrow-icon.is-previous {
+  transform: rotate(-180deg);
 }
 
 [date-picker] .datepicker-actions-switch {
@@ -142,6 +192,10 @@
 [date-picker] .datepicker-calendar-day.is-now {
   color: #FFFFFF;
   background-color: #B9D200;
+}
+
+[date-picker] .datepicker-calendar-day.is-now.is-active {
+  background-color: #007DFF;
 }
 
 [date-picker] .datepicker-calendar-day.is-disabled {
