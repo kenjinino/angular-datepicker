@@ -409,6 +409,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         scope.isTimeActive = !scope.isTimeActive;
         if (!scope.isTimeActive) {
           scope.inputDateTime.time = '';
+          scope.model.setHours(12, 0, 0, 0);
           scope.status.hasTime = false;
         }
       };
