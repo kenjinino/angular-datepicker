@@ -144,7 +144,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
     scope: {
       model: '=datePicker',
       after: '=?',
-      before: '=?'
+      before: '=?',
+      status: '=?'
     },
     link: function (scope, element, attrs) {
 
@@ -161,6 +162,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         date: scope.model,
         time: null
       };
+
+      scope.status = scope.status || { hasDate: false, hasTime: false };
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
@@ -334,15 +337,35 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       /* Watchers - Input and Calendar Sync */
 
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
 
-      /* Changes on Input */
+      /* Changes on Date Input */
       scope.$watch('inputDateTime.date', function (newValue) {
-        if (!newValue || newValue.length < 8) { return; }
+        if (!newValue || newValue.length < 8) {
+          scope.status.hasDate = false;
+          return;
+        }
         newValue = newValue.toString();
         var date = scope.formatDate(newValue, $locale.id);
         if (scope.isValidDate(date)) {
+          scope.status.hasDate = true;
           scope.setDate(date);
+        }
+      });
+
+      /* Changes on Time Input */
+      scope.$watch('inputDateTime.time', function (newValue) {
+        if (!newValue || newValue.length < 4) { return; }
+        newValue = newValue.toString();
+        var hours = scope.formatHours(newValue);
+        var minutes = scope.formatMinutes(newValue);
+        if (scope.isValidTime(hours, minutes)) {
+          scope.model.setHours(hours, minutes);
+          scope.setDate(scope.model);
+          scope.status.hasTime = true;
+        }
+        else {
+          scope.status.hasTime = false;
         }
       });
 
@@ -359,11 +382,23 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
           month = parseInt(date.slice(2, 4), 10);
           year = parseInt(date.slice(4, 8), 10);
         }
-        return new Date(year, month - 1, day);
+        return new Date([year, month, day].join('/'));
+      };
+
+      scope.formatHours = function (time) {
+        return parseInt(time.slice(0,2), 10);
+      };
+
+      scope.formatMinutes = function (time) {
+        return parseInt(time.slice(2,4), 10);
       };
 
       scope.isValidDate = function (date) {
         return date.toJSON() !== null;
+      };
+
+      scope.isValidTime = function (hours, minutes) {
+        return (hours <= 23 && hours >= 0) && (minutes <= 59 && minutes >= 0);
       };
 
       /* Time Input */
@@ -372,6 +407,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         scope.isTimeActive = !scope.isTimeActive;
         if (!scope.isTimeActive) {
           scope.inputDateTime.time = '';
+          scope.status.hasTime = false;
         }
       };
 
@@ -401,9 +437,21 @@ Module.directive('dateRange', function () {
       lastWeek: '=',
       lastMonth: '=',
       start: '=',
-      end: '='
+      end: '=',
+      status: '='
     },
     link: function (scope, element, attrs) {
+
+      scope.status = scope.status ||
+        {
+          isToday: false,
+          isYesterday: false,
+          isLastWeek: false,
+          isLastMonth: false,
+          startStatus: { hasDate: false, hasTime: false },
+          endStatus: { hasDate: false, hasTime: false }
+        };
+
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
@@ -421,6 +469,8 @@ Module.directive('dateRange', function () {
       scope.setToday = function () {
         scope.start = new Date();
         scope.end = new Date();
+        scope.status.isYesterday = scope.status.isLastWeek = scope.status.isLastMonth = false;
+        scope.status.isToday = true;
       };
 
       scope.setYesterday = function () {
@@ -429,6 +479,8 @@ Module.directive('dateRange', function () {
 
         scope.start = yesterday;
         scope.end = yesterday;
+        scope.status.isToday = scope.status.isLastWeek = scope.status.isLastMonth = false;
+        scope.status.isYesterday = true;
       };
 
       scope.setLastWeek = function () {
@@ -437,6 +489,8 @@ Module.directive('dateRange', function () {
 
         scope.start = lastWeek;
         scope.end = new Date();
+        scope.status.isToday = scope.status.isYesterday = scope.status.isLastMonth = false;
+        scope.status.isLastWeek = true;
       };
 
       scope.setLastMonth = function () {
@@ -445,6 +499,8 @@ Module.directive('dateRange', function () {
 
         scope.start = lastMonth;
         scope.end = new Date();
+        scope.status.isToday = scope.status.isYesterday = scope.status.isLastWeek = false;
+        scope.status.isLastMonth = true;
       };
     }
   };
@@ -665,9 +721,9 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
     "        <button class=\"date-range-action\" ng-click=\"setLastMonth()\">{{lastMonth}}</button>\n" +
     "    </div>\n" +
     "    <div class=\"date-range\">\n" +
-    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\n" +
+    "        <div date-picker=\"start\" status=\"status.startStatus\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\n" +
     "        <div class=\"date-range-separator\">{{to}}</div>\n" +
-    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\n" +
+    "        <div date-picker=\"end\" status=\"status.endStatus\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\n" +
     "    </div>\n" +
     "</div>\n"
   );
