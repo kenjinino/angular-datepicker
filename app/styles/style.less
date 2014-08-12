@@ -80,17 +80,17 @@
 
   .datepicker-input-date,
   .datepicker-input-time {
+    border: 0;
     font-size: 11px;
+    height: 20px;
   }
 
   .datepicker-input-date {
-    border: 0;
     float: left;
     width: 60%;
   }
 
   .datepicker-input-time {
-    border: 0;
     float: right;
     width: 20%;
   }
@@ -132,6 +132,16 @@
     }
   }
 
+  .datepicker-actions-arrow-icon {
+    fill: #C3C3C3;
+    height: 8px;
+    width: 8px;
+
+    &.is-previous {
+      transform: rotate(-180deg);
+    }
+  }
+
   .datepicker-actions-switch {
     float: left;
     height: 30px;
@@ -169,6 +179,10 @@
     &.is-now {
       background-color: #B9D200;
       color: #FFFFFF;
+
+      &.is-active {
+        background-color: #007DFF;
+      }
     }
 
     &.is-disabled {
