@@ -159,10 +159,16 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
 
-      scope.inputDateTime = {
-        date: $filter('date')(scope.model, scope.inputDateFormat),
-        time: $filter('date')(scope.model, scope.inputTimeFormat)
-      };
+
+
+      scope.inputDateTime = {};
+      scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
+      if(scope.status.hasTime) {
+        scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat);
+      }
+      else {
+        scope.inputDateTime.time = null;
+      }
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
