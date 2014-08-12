@@ -142,7 +142,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
     scope: {
       model: '=datePicker',
       after: '=?',
-      before: '=?'
+      before: '=?',
+      status: '=?'
     },
     link: function (scope, element, attrs) {
 
@@ -159,6 +160,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         date: scope.model,
         time: null
       };
+
+      scope.status = scope.status || { hasDate: false, hasTime: false };
 
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
@@ -332,15 +335,35 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       /* Watchers - Input and Calendar Sync */
 
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
 
-      /* Changes on Input */
+      /* Changes on Date Input */
       scope.$watch('inputDateTime.date', function (newValue) {
-        if (!newValue || newValue.length < 8) { return; }
+        if (!newValue || newValue.length < 8) {
+          scope.status.hasDate = false;
+          return;
+        }
         newValue = newValue.toString();
         var date = scope.formatDate(newValue, $locale.id);
         if (scope.isValidDate(date)) {
+          scope.status.hasDate = true;
           scope.setDate(date);
+        }
+      });
+
+      /* Changes on Time Input */
+      scope.$watch('inputDateTime.time', function (newValue) {
+        if (!newValue || newValue.length < 4) { return; }
+        newValue = newValue.toString();
+        var hours = scope.formatHours(newValue);
+        var minutes = scope.formatMinutes(newValue);
+        if (scope.isValidTime(hours, minutes)) {
+          scope.model.setHours(hours, minutes);
+          scope.setDate(scope.model);
+          scope.status.hasTime = true;
+        }
+        else {
+          scope.status.hasTime = false;
         }
       });
 
@@ -360,8 +383,20 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         return new Date(year, month - 1, day);
       };
 
+      scope.formatHours = function (time) {
+        return parseInt(time.slice(0,2), 10);
+      };
+
+      scope.formatMinutes = function (time) {
+        return parseInt(time.slice(2,4), 10);
+      };
+
       scope.isValidDate = function (date) {
         return date.toJSON() !== null;
+      };
+
+      scope.isValidTime = function (hours, minutes) {
+        return (hours <= 23 && hours >= 0) && (minutes <= 59 && minutes >= 0);
       };
 
       /* Time Input */
@@ -370,6 +405,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         scope.isTimeActive = !scope.isTimeActive;
         if (!scope.isTimeActive) {
           scope.inputDateTime.time = '';
+          scope.status.hasTime = false;
         }
       };
 
