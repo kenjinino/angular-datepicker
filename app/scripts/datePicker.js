@@ -159,17 +159,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
 
-
-
-      scope.inputDateTime = {};
-      scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
-      if(scope.status.hasTime) {
-        scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat);
-      }
-      else {
-        scope.inputDateTime.time = null;
-      }
-
       /** @namespace attrs.minView, attrs.maxView */
       scope.views =scope.views.slice(
         scope.views.indexOf(attrs.maxView || 'year'),
@@ -266,7 +255,16 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.$watch('status', function() {
         scope.status = scope.status || { hasDate: false, hasTime: false };
 
-        if(scope.status.hasTime) { scope.isTimeActive = true; }
+
+        scope.inputDateTime = {};
+        scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
+        if(scope.status.hasTime) {
+          scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat);
+          scope.isTimeActive = true;
+        }
+        else {
+          scope.inputDateTime.time = null;
+        }
       });
 
       scope.next = function (delta) {
