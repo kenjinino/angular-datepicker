@@ -357,7 +357,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
           month = parseInt(date.slice(2, 4), 10);
           year = parseInt(date.slice(4, 8), 10);
         }
-        return new Date(year, month - 1, day);
+        return new Date([year, month, day].join("/"));
       };
 
       scope.isValidDate = function (date) {
