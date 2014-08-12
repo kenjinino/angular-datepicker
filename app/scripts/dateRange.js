@@ -68,79 +68,73 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
       };
 
       scope.setYesterday = function () {
+        var startTempDate = new Date();
+        var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          tempDate.setDate(tempDate.getDate() - 1);
-          scope.start = tempDate;
+          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setDate(startTempDate.getDate() - 1);
+          scope.start = startTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
-          tempDate.setDate(tempDate.getDate() - 1);
-          scope.start = tempDate;
+          startTempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
+          startTempDate.setDate(startTempDate.getDate() - 1);
+          scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          tempDate.setDate(tempDate.getDate() - 1);
-          scope.end = tempDate;
+          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setDate(endTempDate.getDate() - 1);
+          scope.end = endTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
-          tempDate.setDate(tempDate.getDate() - 1);
-          scope.end = tempDate;
+          endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
+          endTempDate.setDate(endTempDate.getDate() - 1);
+          scope.end = endTempDate;
         }
       };
 
       scope.setLastWeek = function () {
+        var startTempDate = new Date();
+        var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          tempDate.setDate(tempDate.getDate() - 7);
-          scope.start = tempDate;
+          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setDate(startTempDate.getDate() - 7);
+          scope.start = startTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
-          tempDate.setDate(tempDate.getDate() - 7);
-          scope.start = tempDate;
+          startTempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
+          startTempDate.setDate(startTempDate.getDate() - 7);
+          scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          scope.end = tempDate;
+          endTempDate.setHours(12, 0, 0, 0);
+          scope.end = endTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
-          scope.end = tempDate;
+          endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
+          scope.end = endTempDate;
         }
       };
 
       scope.setLastMonth = function () {
+        var startTempDate = new Date();
+        var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          tempDate.setMonth(tempDate.getMonth() - 1);
-          scope.start = tempDate;
+          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setMonth(startTempDate.getMonth() - 1);
+          scope.start = startTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
-          tempDate.setMonth(tempDate.getMonth() - 1);
-          scope.start = tempDate;
+          startTempDate.setHours(scope.start.getHours(), scope.start.getMinutes(), 0, 0);
+          startTempDate.setMonth(startTempDate.getMonth() - 1);
+          scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          var tempDate = new Date();
-          tempDate.setHours(12, 0, 0, 0);
-          scope.end = tempDate;
+          endTempDate.setHours(12, 0, 0, 0);
+          scope.end = endTempDate;
         }
         else {
-          var tempDate = new Date();
-          tempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
-          scope.end = tempDate;
+          endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
+          scope.end = endTempDate;
         }
       };
 
@@ -171,34 +165,34 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           lastMonth.setMonth(lastMonth.getMonth() - 1);
           var lastMonthDate = $filter('date')(lastMonth, scope.inputDateFormat);
 
-          if((startDate == endDate) && (startDate == todayDate)) {
+          if((startDate === endDate) && (startDate === todayDate)) {
             scope.status.selectedPeriodString = scope.today;
             return;
           }
 
-          if((startDate == endDate) && (startDate == yesterdayDate)) {
+          if((startDate === endDate) && (startDate === yesterdayDate)) {
             scope.status.selectedPeriodString = scope.yesterday;
             return;
           }
 
-          if((startDate == lastWeekDate) && (endDate == todayDate)) {
+          if((startDate === lastWeekDate) && (endDate === todayDate)) {
             scope.status.selectedPeriodString = scope.lastWeek;
             return;
           }
 
-          if((startDate == lastMonthDate) && (endDate == todayDate)) {
+          if((startDate === lastMonthDate) && (endDate === todayDate)) {
             scope.status.selectedPeriodString = scope.lastMonth;
             return;
           }
         }
 
         var startString = startDate;
-        if(status.startStatus.hasTime) { startString += " " + scope.at + " " + startTime }
+        if(status.startStatus.hasTime) { startString += ' ' + scope.at + ' ' + startTime; }
 
         var endString = endDate;
-        if(status.endStatus.hasTime) { endString += " " + scope.at + " " + endTime }
+        if(status.endStatus.hasTime) { endString += ' ' + scope.at + ' ' + endTime; }
 
-        status.selectedPeriodString = startString + " " + scope.to + " " + endString;
+        status.selectedPeriodString = startString + ' ' + scope.to + ' ' + endString;
         return;
       };
     }
