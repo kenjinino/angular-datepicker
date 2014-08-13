@@ -18,6 +18,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
     },
     link: function (scope, element, attrs) {
 
+      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+      scope.inputTimeFormat = 'HH:mm';
+
       scope.status = scope.status ||
         {
           selectedPeriodString: null,
@@ -26,8 +29,11 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           hasPresetedDate: false
         };
 
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
-      scope.inputTimeFormat = 'HH:mm';
+      var initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
+      if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
+
+      initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
+      if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
 
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
