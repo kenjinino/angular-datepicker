@@ -36,14 +36,22 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         if (value && scope.end && value > scope.end.getTime()) {
           scope.end = new Date(value);
         }
-
+        if (scope.start && !scope.status.startStatus.hasTime) {
+          scope.start = new Date(
+            scope.start.getFullYear(), scope.start.getMonth(),
+            scope.start.getDate(), 0, 0);
+        }
         scope.setSelectedPeriodString(scope.start, scope.end, scope.status);
       });
       scope.$watch('end.getTime()', function (value) {
         if (value && scope.start && value < scope.start.getTime()) {
           scope.start = new Date(value);
         }
-
+        if (scope.end && !scope.status.endStatus.hasTime) {
+          scope.end = new Date(
+            scope.end.getFullYear(), scope.start.getMonth(),
+            scope.end.getDate(), 23, 59);
+        }
         scope.setSelectedPeriodString(scope.start, scope.end, scope.status);
       });
 
