@@ -150,6 +150,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.inputDateFormat = $locale.id === 'en-us' ? 'MMddyyyy' : 'ddMMyyyy';
       scope.inputTimeFormat = 'HHmm';
 
+      if(scope.model == '') { scope.model = null; }
+
       scope.date = new Date(scope.model || new Date());
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
