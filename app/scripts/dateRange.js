@@ -66,6 +66,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setYesterday = function () {
@@ -91,6 +94,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           endTempDate.setDate(endTempDate.getDate() - 1);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setLastWeek = function () {
@@ -114,6 +120,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setLastMonth = function () {
@@ -137,6 +146,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setSelectedPeriodString = function (start, end, status) {

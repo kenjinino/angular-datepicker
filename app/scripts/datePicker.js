@@ -247,7 +247,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       function updateDate() {
         if(scope.model) {
           scope.date.setTime(scope.model.getTime());
-          if(scope.inputDateTime) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
+          if(scope.inputDateTime && scope.status.hasDate) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
+          if(scope.inputDateTime && scope.status.hasTime) { scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat); }
           update();
         }
       }
