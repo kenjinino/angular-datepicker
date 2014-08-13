@@ -29,11 +29,16 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           hasPresetedDate: false
         };
 
-      var initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
-      if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
+      var initialTime = null;
+      if(scope.start) {
+        initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
+        if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
+      }
 
-      initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
-      if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
+      if(scope.end) {
+        initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
+        if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
+      }
 
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
