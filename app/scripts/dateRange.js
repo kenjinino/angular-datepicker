@@ -18,27 +18,33 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
     },
     link: function (scope, element, attrs) {
 
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
-      scope.inputTimeFormat = 'HH:mm';
+      var init = function() {
+        scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+        scope.inputTimeFormat = 'HH:mm';
 
-      scope.status = scope.status ||
-        {
-          selectedPeriodString: null,
-          startStatus: { hasDate: false, hasTime: false },
-          endStatus: { hasDate: false, hasTime: false },
-          hasPresetedDate: false
-        };
+        scope.status = scope.status ||
+          {
+            selectedPeriodString: null,
+            startStatus: { hasDate: false, hasTime: false },
+            endStatus: { hasDate: false, hasTime: false },
+            hasPresetedDate: false
+          };
 
-      var initialTime = null;
-      if(scope.start) {
-        initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
-        if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
-      }
+        var initialTime = null;
+        if(isNaN(scope.start.getTime()) && isNaN(scope.end.getTime())) {
+          scope.setLastWeek();
+        }
 
-      if(scope.end) {
-        initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
-        if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
-      }
+        if(scope.start) {
+          initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
+          if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
+        }
+
+        if(scope.end) {
+          initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
+          if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
+        }
+      };
 
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
@@ -70,7 +76,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           scope.start = startTempDate;
         }
         else {
@@ -78,7 +84,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
@@ -94,7 +100,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setDate(startTempDate.getDate() - 1);
           scope.start = startTempDate;
         }
@@ -104,7 +110,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           endTempDate.setDate(endTempDate.getDate() - 1);
           scope.end = endTempDate;
         }
@@ -122,7 +128,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setDate(startTempDate.getDate() - 7);
           scope.start = startTempDate;
         }
@@ -132,7 +138,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
@@ -148,7 +154,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setMonth(startTempDate.getMonth() - 1);
           scope.start = startTempDate;
         }
@@ -158,7 +164,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
@@ -232,6 +238,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         scope.status.hasPresetedDate = false;
         return;
       };
+
+      init();
+
     }
   };
 }]);
