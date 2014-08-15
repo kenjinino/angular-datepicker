@@ -423,6 +423,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       scope.toggleTimeInputFocused = function () {
         scope.isTimeInputFocused = !scope.isTimeInputFocused;
+        scope.toggleDateInputFocused();
       };
 
       scope.toggleDateInputFocused = function () {
