@@ -97,16 +97,17 @@
   cursor: pointer;
   border: 1px solid #FFFFFF;
   border-radius: 2px;
+  fill: #C3C3C3;
 }
 
 [date-picker] .datepicker-actions-arrow:hover {
   border: 1px solid #8CC8FF;
+  fill: #8CC8FF;
 }
 
 [date-picker] .datepicker-actions-arrow-icon {
   width: 8px;
   height: 8px;
-  fill: #C3C3C3;
 }
 
 [date-picker] .datepicker-actions-arrow-icon.is-previous {

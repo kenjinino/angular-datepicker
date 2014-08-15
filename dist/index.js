@@ -249,7 +249,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       function updateDate() {
         if(scope.model) {
           scope.date.setTime(scope.model.getTime());
-          if(scope.inputDateTime) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
+          if(scope.inputDateTime && scope.status.hasDate) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
+          if(scope.inputDateTime && scope.status.hasTime) { scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat); }
           update();
         }
       }
@@ -424,6 +425,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
 
       scope.toggleTimeInputFocused = function () {
         scope.isTimeInputFocused = !scope.isTimeInputFocused;
+        scope.toggleDateInputFocused();
       };
 
       scope.toggleDateInputFocused = function () {
@@ -454,16 +456,33 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
     },
     link: function (scope, element, attrs) {
 
-      scope.status = scope.status ||
-        {
-          selectedPeriodString: null,
-          startStatus: { hasDate: false, hasTime: false },
-          endStatus: { hasDate: false, hasTime: false },
-          hasPresetedDate: false
-        };
+      var init = function() {
+        scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
+        scope.inputTimeFormat = 'HH:mm';
 
-      scope.inputDateFormat = $locale.id === 'en-us' ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
-      scope.inputTimeFormat = 'HH:mm';
+        scope.status = scope.status ||
+          {
+            selectedPeriodString: null,
+            startStatus: { hasDate: false, hasTime: false },
+            endStatus: { hasDate: false, hasTime: false },
+            hasPresetedDate: false
+          };
+
+        var initialTime = null;
+        if((typeof scope.start === 'undefined' || scope.start === null) && (typeof scope.end === 'undefined' || scope.end === null)) {
+          scope.setLastWeek();
+        }
+
+        if(scope.start) {
+          initialTime = $filter('date')(scope.start, scope.inputTimeFormat);
+          if(initialTime !== '00:00') { scope.status.startStatus.hasTime = true; }
+        }
+
+        if(scope.end) {
+          initialTime = $filter('date')(scope.end, scope.inputTimeFormat);
+          if(initialTime !== '23:59') { scope.status.endStatus.hasTime = true; }
+        }
+      };
 
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
@@ -495,7 +514,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           scope.start = startTempDate;
         }
         else {
@@ -503,20 +522,23 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setYesterday = function () {
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setDate(startTempDate.getDate() - 1);
           scope.start = startTempDate;
         }
@@ -526,7 +548,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           endTempDate.setDate(endTempDate.getDate() - 1);
           scope.end = endTempDate;
         }
@@ -535,13 +557,16 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           endTempDate.setDate(endTempDate.getDate() - 1);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setLastWeek = function () {
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setDate(startTempDate.getDate() - 7);
           scope.start = startTempDate;
         }
@@ -551,20 +576,23 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setLastMonth = function () {
         var startTempDate = new Date();
         var endTempDate = new Date();
         if(!scope.status.startStatus.hasTime) {
-          startTempDate.setHours(12, 0, 0, 0);
+          startTempDate.setHours(0, 0, 0, 0);
           startTempDate.setMonth(startTempDate.getMonth() - 1);
           scope.start = startTempDate;
         }
@@ -574,13 +602,16 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           scope.start = startTempDate;
         }
         if(!scope.status.endStatus.hasTime) {
-          endTempDate.setHours(12, 0, 0, 0);
+          endTempDate.setHours(23, 59, 0, 0);
           scope.end = endTempDate;
         }
         else {
           endTempDate.setHours(scope.end.getHours(), scope.end.getMinutes(), 0, 0);
           scope.end = endTempDate;
         }
+
+        scope.status.startStatus.hasDate = true;
+        scope.status.endStatus.hasDate = true;
       };
 
       scope.setSelectedPeriodString = function (start, end, status) {
@@ -645,6 +676,9 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         scope.status.hasPresetedDate = false;
         return;
       };
+
+      init();
+
     }
   };
 }]);
