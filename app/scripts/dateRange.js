@@ -31,7 +31,10 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
           };
 
         var initialTime = null;
-        if((typeof scope.start === 'undefined' || scope.start === null) && (typeof scope.end === 'undefined' || scope.end === null)) {
+        if(
+            ((typeof scope.start === 'undefined' || scope.start === null) && (typeof scope.end === 'undefined' || scope.end === null)) ||
+            (isNaN(scope.start.getTime()) && isNaN(scope.end.getTime()))
+          ) {
           scope.setLastWeek();
         }
 
