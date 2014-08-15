@@ -833,25 +833,25 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
     "  <div class=\"datepicker-input\" ng-class=\"{ 'is-focused': isDateInputFocused }\">\n" +
     "    <input class=\"datepicker-input-date\" type=\"text\" maxlength=\"10\" ng-model=\"inputDateTime.date\" ui-mask=\"99/99/9999\" ng-focus=\"toggleDateInputFocused()\"\n" +
     "      ng-blur=\"toggleDateInputFocused()\"></input>\n" +
-    "    <svg class=\"datepicker-input-icon\" ng-click=\"toggleTimeInput()\" ng-class=\"{ 'is-active': isTimeActive, 'is-focused': isTimeInputFocused }\"\n" +
-    "      version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
-    "      viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\">\n" +
-    "    <g id=\"time\">\n" +
-    "      <path d=\"M12.5,10H10V6.5C10,6.22,9.78,6,9.5,6C9.22,6,9,6.22,9,6.5V11h3.5c0.28,0,0.5-0.22,0.5-0.5C13,10.22,12.78,10,12.5,10z\"/>\n" +
-    "      <path d=\"M10,3c-3.87,0-7,3.13-7,7s3.13,7,7,7s7-3.13,7-7S13.87,3,10,3z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6\n" +
-    "        S13.31,16,10,16z\"/>\n" +
-    "    </g>\n" +
-    "    </svg>\n" +
     "    <input\n" +
     "      class=\"datepicker-input-time\"\n" +
     "      type=\"text\"\n" +
     "      maxlength=\"5\"\n" +
     "      ng-model=\"inputDateTime.time\"\n" +
     "      ui-mask=\"99:99\"\n" +
-    "      ng-if=\"isTimeActive\"\n" +
+    "      ng-show=\"isTimeActive\"\n" +
     "      ng-focus=\"toggleTimeInputFocused()\"\n" +
     "      ng-blur=\"toggleTimeInputFocused()\">\n" +
     "    </input>\n" +
+    "    <svg class=\"datepicker-input-icon\" ng-click=\"toggleTimeInput()\" ng-class=\"{ 'is-active': isTimeActive, 'is-focused': isTimeInputFocused }\"\n" +
+    "      version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
+    "      viewBox=\"0 0 20 20\" style=\"enable-background:new 0 0 20 20;\" xml:space=\"preserve\">\n" +
+    "      <g id=\"time\">\n" +
+    "        <path d=\"M12.5,10H10V6.5C10,6.22,9.78,6,9.5,6C9.22,6,9,6.22,9,6.5V11h3.5c0.28,0,0.5-0.22,0.5-0.5C13,10.22,12.78,10,12.5,10z\"/>\n" +
+    "        <path d=\"M10,3c-3.87,0-7,3.13-7,7s3.13,7,7,7s7-3.13,7-7S13.87,3,10,3z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6\n" +
+    "          S13.31,16,10,16z\"/>\n" +
+    "      </g>\n" +
+    "    </svg>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"datepicker-actions\">\n" +
@@ -861,7 +861,7 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
     "      <polygon id=\"arrow\" points=\"9,8 1.03448,0 0,1.06667 6.93103,8 0,14.93333 1.03448,16 \"/>\n" +
     "      </svg>\n" +
     "    </span>\n" +
-    "    <span class=\"datepicker-actions-switch\">{{date|date:\"yyyy MMMM\"}}</span>\n" +
+    "    <span class=\"datepicker-actions-switch\">{{date|date:\"MMMM yyyy\"}}</span>\n" +
     "    <span class=\"datepicker-actions-arrow\" ng-click=\"next()\">\n" +
     "      <svg class=\"datepicker-actions-arrow-icon is-next\" version=\"1.1\" id=\"icons\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\n" +
     "         viewBox=\"0 0 9 16\" enable-background=\"new 0 0 9 16\" xml:space=\"preserve\">\n" +
