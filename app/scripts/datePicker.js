@@ -132,6 +132,21 @@ function isSameMinutes(model, date) {
   return isSameHour(model, date) && model.getMinutes() === date.getMinutes();
 }
 
+Module.directive('xngFocus', ['$timeout', function ($timeout) {
+  return {
+    link: function (scope, element, attrs) {
+      scope.$watch(attrs.xngFocus, function (newValue) {
+        if(newValue) {
+          $timeout(function () {
+            if ( scope.$eval(attrs.xngFocus) ) {
+              element[0].focus();
+            }
+          }, 0, false);
+        }
+      });
+    }
+  };
+}]);
 
 Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
 
@@ -418,16 +433,19 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
           scope.inputDateTime.time = '';
           scope.model.setHours(12, 0, 0, 0);
           scope.status.hasTime = false;
+          scope.setTimeInputFocused(false);
+        }
+        else {
+          scope.setTimeInputFocused(true);
         }
       };
 
-      scope.toggleTimeInputFocused = function () {
-        scope.isTimeInputFocused = !scope.isTimeInputFocused;
-        scope.toggleDateInputFocused();
+      scope.setTimeInputFocused = function (isFocused) {
+        scope.isTimeInputFocused = isFocused;
       };
 
-      scope.toggleDateInputFocused = function () {
-        scope.isDateInputFocused = !scope.isDateInputFocused;
+      scope.setDateInputFocused = function (isFocused) {
+        scope.isDateInputFocused = isFocused;
       };
 
     }
