@@ -69,7 +69,7 @@ Module.directive('dateRange', [ '$filter', '$locale', function ($filter, $locale
         }
         if (scope.end && !scope.status.endStatus.hasTime) {
           scope.end = new Date(
-            scope.end.getFullYear(), scope.start.getMonth(),
+            scope.end.getFullYear(), scope.end.getMonth(),
             scope.end.getDate(), 23, 59);
         }
         scope.setSelectedPeriodString(scope.start, scope.end, scope.status);
