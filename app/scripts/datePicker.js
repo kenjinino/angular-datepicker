@@ -148,14 +148,14 @@ Module.directive('xngFocus', ['$timeout', function ($timeout) {
   };
 }]);
 
-Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
+Module.directive('datePickerInput', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
 
   //noinspection JSUnusedLocalSymbols
   return {
     // this is a bug ?
     template: '<div ng-include="template"></div>',
     scope: {
-      model: '=datePicker',
+      model: '=datePickerInput',
       after: '=?',
       before: '=?',
       status: '=?'
@@ -171,7 +171,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
       scope.now = new Date();
-      scope.template = attrs.template || datePickerConfig.template;
+      scope.template = 'templates/datepicker_input.html';
 
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
@@ -222,6 +222,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
           }
           scope.$emit('setDate', scope.model, scope.view);
         }
+
+        scope.status.hasDate = true;
 
         if (nextView) {
           scope.setView(nextView);
@@ -372,7 +374,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         newValue = newValue.toString();
         var date = scope.formatDate(newValue, $locale.id);
         if (scope.isValidDate(date)) {
-          scope.status.hasDate = true;
           scope.setDate(date);
         }
       });
@@ -452,14 +453,14 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
   };
 }]);
 
-Module.directive('datePickerClassic', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
+Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
 
   //noinspection JSUnusedLocalSymbols
   return {
     // this is a bug ?
     template: '<div ng-include="template"></div>',
     scope: {
-      model: '=datePickerClassic',
+      model: '=datePicker',
       after: '=?',
       before: '=?',
       status: '=?'
@@ -475,7 +476,7 @@ Module.directive('datePickerClassic', ['datePickerConfig', '$filter', '$locale',
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
       scope.now = new Date();
-      scope.template = 'templates/datepicker_classic.html';
+      scope.template = attrs.template || datePickerConfig.template;
 
       var step = parseInt(attrs.step || datePickerConfig.step, 10);
       var partial = !!attrs.partial;
