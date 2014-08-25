@@ -563,32 +563,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         return scope.model ? scope.model.getTime() : null;
       }
 
-      /* Changes on Calendar */
-      function updateDate() {
-        if(scope.model) {
-          scope.date.setTime(scope.model.getTime());
-          if(scope.inputDateTime && scope.status.hasDate) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
-          if(scope.inputDateTime && scope.status.hasTime) { scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat); }
-          update();
-        }
-      }
-
       scope.$watch(watch, update);
-      scope.$watch(watch, updateDate);
-      scope.$watch('status', function() {
-        scope.status = scope.status || { hasDate: false, hasTime: false };
-
-
-        scope.inputDateTime = {};
-        scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
-        if(scope.status.hasTime) {
-          scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat);
-          scope.isTimeActive = true;
-        }
-        else {
-          scope.inputDateTime.time = null;
-        }
-      });
 
       scope.next = function (delta) {
         var date = scope.date;
@@ -665,38 +640,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         }
         return is;
       };
-
-      /* Watchers - Input and Calendar Sync */
-
-      /* Changes on Date Input */
-      scope.$watch('inputDateTime.date', function (newValue) {
-        if (!newValue || newValue.length < 8) {
-          scope.status.hasDate = false;
-          return;
-        }
-        newValue = newValue.toString();
-        var date = scope.formatDate(newValue, $locale.id);
-        if (scope.isValidDate(date)) {
-          scope.status.hasDate = true;
-          scope.setDate(date);
-        }
-      });
-
-      /* Changes on Time Input */
-      scope.$watch('inputDateTime.time', function (newValue) {
-        if (!newValue || newValue.length < 4) { return; }
-        newValue = newValue.toString();
-        var hours = scope.formatHours(newValue);
-        var minutes = scope.formatMinutes(newValue);
-        if (scope.isValidTime(hours, minutes)) {
-          scope.model.setHours(hours, minutes);
-          scope.setDate(scope.model);
-          scope.status.hasTime = true;
-        }
-        else {
-          scope.status.hasTime = false;
-        }
-      });
 
       /* Date Format based on Locale */
       scope.formatDate = function (date, locale) {
