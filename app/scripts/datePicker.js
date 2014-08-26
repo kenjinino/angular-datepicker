@@ -744,6 +744,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
       var close = function() {
         $document.unbind('click');
         $document.unbind('dblclick');
+        scope.setDateInputFocused(false);
+        scope.setTimeInputFocused(false);
       };
 
       var bindClick = function () {
