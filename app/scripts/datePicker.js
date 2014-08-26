@@ -775,7 +775,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
 
       var bindDblclick = function() {
         return $document.bind('dblclick', function(event) {
-          if(event.target.classList !== undefined && event.target.classList.contains('datepicker-calendar-day') >= 0) {
+          if(event.target.classList !== undefined && event.target.classList.contains('datepicker-calendar-day')) {
             scope.isDatepickerVisible = false;
             close();
           }
