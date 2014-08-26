@@ -752,7 +752,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
           var isNodeChild;
           isNodeChild = function(node) {
             while (node !== null) {
-              if (node === element[0] || (node.className !== undefined && node.classList.contains('datepicker-calendar-day'))) {
+              if (node === element[0] || (node.classList !== undefined && node.classList.contains('datepicker-calendar-day'))) {
                 scope.isDatepickerVisible = true;
                 return true;
               }
@@ -775,7 +775,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
 
       var bindDblclick = function() {
         return $document.bind('dblclick', function(event) {
-          if(event.target.className !== undefined && event.target.classList.contains('datepicker-calendar-day') >= 0) {
+          if(event.target.classList !== undefined && event.target.classList.contains('datepicker-calendar-day') >= 0) {
             scope.isDatepickerVisible = false;
             close();
           }
