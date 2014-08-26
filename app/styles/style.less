@@ -32,57 +32,6 @@
   }
 }
 
-[date-picker-input], [date-picker] {
-
-  .datetime-input {
-    border: 1px solid #EBEBEB;
-    height: 30px;
-    padding: 5px;
-    position: relative;
-
-    width: 170px;
-
-
-    &.is-focused {
-      border: 1px solid #8CC8FF;
-    }
-  }
-
-  .datetime-input-date,
-  .datetime-input-time {
-    border: 0;
-    font-size: 11px;
-    height: 20px;
-  }
-
-  .datetime-input-date {
-    float: left;
-    width: 60%;
-  }
-
-  .datetime-input-time {
-    float: right;
-    width: 20%;
-  }
-
-  .datetime-input-icon {
-    fill: #C3C3C3;
-    height: 20px;
-    position: absolute;
-    right: 7px;
-    width: 20px;
-
-    &.is-focused {
-      fill: #8CC8FF;
-    }
-
-    &.is-active {
-      right: 40px;
-    }
-  }
-
-}
-
 /* DatePicker */
 
 [date-picker-input], [date-picker], {
@@ -121,6 +70,53 @@
   .datepicker-actions {
     font-size: 13px;
     height: 30px;
+  }
+
+  .datepicker-input {
+    border: 1px solid #EBEBEB;
+    height: 30px;
+    padding: 5px;
+    position: relative;
+
+    width: 170px;
+
+
+    &.is-focused {
+      border: 1px solid #8CC8FF;
+    }
+  }
+
+  .datepicker-input-date,
+  .datepicker-input-time {
+    border: 0;
+    font-size: 11px;
+    height: 20px;
+  }
+
+  .datepicker-input-date {
+    float: left;
+    width: 60%;
+  }
+
+  .datepicker-input-time {
+    float: right;
+    width: 20%;
+  }
+
+  .datepicker-input-icon {
+    fill: #C3C3C3;
+    height: 20px;
+    position: absolute;
+    right: 7px;
+    width: 20px;
+
+    &.is-focused {
+      fill: #8CC8FF;
+    }
+
+    &.is-active {
+      right: 40px;
+    }
   }
 
   .datepicker-actions-arrow {
