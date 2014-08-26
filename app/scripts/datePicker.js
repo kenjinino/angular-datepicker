@@ -453,7 +453,7 @@ Module.directive('datePickerInput', ['datePickerConfig', '$filter', '$locale', f
   };
 }]);
 
-Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', function datePickerDirective(datePickerConfig, $filter, $locale) {
+Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$document', function datePickerDirective(datePickerConfig, $filter, $locale, $document) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -528,6 +528,8 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
           scope.$emit('setDate', scope.model, scope.view);
         }
 
+        scope.status.hasDate = true;
+
         if (nextView) {
           scope.setView(nextView);
         }
@@ -563,7 +565,32 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         return scope.model ? scope.model.getTime() : null;
       }
 
+      /* Changes on Calendar */
+      function updateDate() {
+        if(scope.model) {
+          scope.date.setTime(scope.model.getTime());
+          if(scope.inputDateTime && scope.status.hasDate) { scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat); }
+          if(scope.inputDateTime && scope.status.hasTime) { scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat); }
+          update();
+        }
+      }
+
       scope.$watch(watch, update);
+      scope.$watch(watch, updateDate);
+      scope.$watch('status', function() {
+        scope.status = scope.status || { hasDate: false, hasTime: false };
+
+
+        scope.inputDateTime = {};
+        scope.inputDateTime.date = $filter('date')(scope.model, scope.inputDateFormat);
+        if(scope.status.hasTime) {
+          scope.inputDateTime.time = $filter('date')(scope.model, scope.inputTimeFormat);
+          scope.isTimeActive = true;
+        }
+        else {
+          scope.inputDateTime.time = null;
+        }
+      });
 
       scope.next = function (delta) {
         var date = scope.date;
@@ -641,6 +668,37 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
         return is;
       };
 
+      /* Watchers - Input and Calendar Sync */
+
+      /* Changes on Date Input */
+      scope.$watch('inputDateTime.date', function (newValue) {
+        if (!newValue || newValue.length < 8) {
+          scope.status.hasDate = false;
+          return;
+        }
+        newValue = newValue.toString();
+        var date = scope.formatDate(newValue, $locale.id);
+        if (scope.isValidDate(date)) {
+          scope.setDate(date);
+        }
+      });
+
+      /* Changes on Time Input */
+      scope.$watch('inputDateTime.time', function (newValue) {
+        if (!newValue || newValue.length < 4) { return; }
+        newValue = newValue.toString();
+        var hours = scope.formatHours(newValue);
+        var minutes = scope.formatMinutes(newValue);
+        if (scope.isValidTime(hours, minutes)) {
+          scope.model.setHours(hours, minutes);
+          scope.setDate(scope.model);
+          scope.status.hasTime = true;
+        }
+        else {
+          scope.status.hasTime = false;
+        }
+      });
+
       /* Date Format based on Locale */
       scope.formatDate = function (date, locale) {
         var year, month, day;
@@ -672,6 +730,65 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', functi
       scope.isValidTime = function (hours, minutes) {
         return (hours <= 23 && hours >= 0) && (minutes <= 59 && minutes >= 0);
       };
+
+      /* Time Input */
+
+      scope.setTimeInputFocused = function (isFocused) {
+        scope.isTimeInputFocused = isFocused;
+      };
+
+      scope.setDateInputFocused = function (isFocused) {
+        scope.isDateInputFocused = isFocused;
+      };
+
+      var close = function() {
+        $document.unbind('click');
+        $document.unbind('dblclick');
+      };
+
+      var bindClick = function () {
+        return $document.bind('click', function(event) {
+          // check if a given node is valid
+          var isNodeChild;
+          isNodeChild = function(node) {
+            while (node != null) {
+              if (node === element[0] || (node.className !== undefined && node.className.indexOf('datepicker-calendar-day') >= 0)) {
+                scope.isDatepickerVisible = true;
+                return true;
+              }
+
+              node = node.parentNode;
+            }
+
+            scope.isDatepickerVisible = false;
+            scope.setDateInputFocused(false);
+            return false;
+          };
+
+          if (!isNodeChild(event.target)) {
+            close();
+          }
+
+          return scope.$apply();
+        });
+      };
+
+      var bindDblclick = function() {
+        return $document.bind('dblclick', function(event) {
+          if(event.target.className.indexOf('datepicker-calendar-day') >= 0) {
+            scope.isDatepickerVisible = false;
+            close();
+          }
+
+          return scope.$apply();
+        });
+      };
+
+      scope.bindDatepicker = function () {
+        bindClick();
+        bindDblclick();
+      };
+
     }
   };
 }]);
