@@ -33,28 +33,6 @@ Module.directive('dateTimeAppend', function () {
   };
 });
 
-Module.directive('dateTimeInput', function () {
-  return {
-    templateUrl: 'templates/datetime_input.html',
-    scope: {
-      dateInput: "=",
-      timeInput: "="
-    },
-    link: function (scope, element, attrs) {
-
-      /* Time Input */
-      scope.setTimeInputFocused = function (isFocused) {
-        scope.isTimeInputFocused = isFocused;
-      };
-
-      scope.setDateInputFocused = function (isFocused) {
-        scope.isDateInputFocused = isFocused;
-      };
-
-    }
-  };
-});
-
 Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfig', '$parse', function ($compile, $document, $filter, dateTimeConfig, $parse) {
   var body = $document.find('body');
   var dateFilter = $filter('date');
