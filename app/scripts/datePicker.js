@@ -751,7 +751,7 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
           // check if a given node is valid
           var isNodeChild;
           isNodeChild = function(node) {
-            while (node != null) {
+            while (node !== null) {
               if (node === element[0] || (node.className !== undefined && node.className.indexOf('datepicker-calendar-day') >= 0)) {
                 scope.isDatepickerVisible = true;
                 return true;
