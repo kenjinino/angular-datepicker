@@ -752,7 +752,6 @@ Module.directive('datePicker', ['datePickerConfig', '$filter', '$locale', '$docu
           var isNodeChild;
           isNodeChild = function(node) {
             while (node !== null) {
-              debugger
               if (node === element[0] || (node.className !== undefined && node.classList.contains('datepicker-calendar-day'))) {
                 scope.isDatepickerVisible = true;
                 return true;
