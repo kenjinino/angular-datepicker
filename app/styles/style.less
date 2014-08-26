@@ -115,7 +115,7 @@
     }
 
     &.is-active {
-      right: 40px;
+      right: 23%;
     }
   }
 
@@ -195,4 +195,38 @@
       cursor: default;
     }
   }
+}
+
+[date-picker] {
+
+  .datepicker {
+    color: #5F5F5F;
+    width: 170px;
+    position: relative;
+  }
+
+  .datepicker-input {
+    border: 1px solid #EBEBEB;
+    height: 30px;
+    padding: 5px;
+    position: relative;
+
+    width: 192px;
+
+
+    &.is-focused {
+      border: 1px solid #8CC8FF;
+    }
+  }
+
+  .datepicker-dropdown {
+    border: 1px solid #EBEBEB;
+    border-radius: 2px;
+    padding: 0px 10px 10px 10px;
+    width: 192px;
+    position: absolute;
+    bottom: 35px;
+    background-color: white;
+  }
+
 }
